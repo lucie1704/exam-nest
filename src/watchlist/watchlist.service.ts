@@ -19,11 +19,11 @@ export class WatchlistService {
           movieId,
         },
       },
-      update: data,
+      update: data || {},
       create: {
         userId,
         movieId,
-        ...data,
+        ...(data || {}),
       },
       include: {
         movie: true,

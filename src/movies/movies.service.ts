@@ -18,9 +18,9 @@ export class MoviesService {
 
     const where = search ? {
       OR: [
-        { title: { contains: search, mode: 'insensitive' } },
-        { director: { contains: search, mode: 'insensitive' } },
-        { genre: { contains: search, mode: 'insensitive' } },
+        { title: { contains: search, mode: 'insensitive' as const } },
+        { director: { contains: search, mode: 'insensitive' as const } },
+        { genre: { contains: search, mode: 'insensitive' as const } },
       ],
     } : {};
 

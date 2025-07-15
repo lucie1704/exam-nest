@@ -5,20 +5,13 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { TokenType } from '@prisma/client';
+import { JwtPayload } from '../types/jwt.types';
 
 interface registerData {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-}
-
-export interface JwtPayload {
-  sub: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
 }
 
 @Injectable()
