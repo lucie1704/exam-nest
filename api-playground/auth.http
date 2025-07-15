@@ -1,0 +1,45 @@
+### Variables d'environnement
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ========================================
+### AUTHENTIFICATION
+### ========================================
+
+### Inscription d'un nouvel utilisateur
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+### Connexion utilisateur
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### Connexion avec John
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### Connexion avec Jane
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "jane@example.com",
+  "password": "password123"
+} 

@@ -1,0 +1,45 @@
+### Variables d'environnement
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ========================================
+### TEST INSCRIPTION AVEC EMAIL DE BIENVENUE
+### ========================================
+
+### Inscription d'un nouvel utilisateur (déclenche l'email de bienvenue)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+### Inscription d'un autre utilisateur
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "user2@example.com",
+  "password": "password123",
+  "firstName": "User",
+  "lastName": "Two"
+}
+
+### ========================================
+### VÉRIFICATION
+### ========================================
+
+### Connexion avec le nouvel utilisateur
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Vérifier MailDev
+# Ouvrir http://localhost:1080 pour voir les emails reçus

@@ -1,0 +1,70 @@
+### Variables d'environnement
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Récupérer le token d'authentification (à exécuter en premier)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### Extraire le token
+@authToken = {{login.response.body.access_token}}
+
+### ========================================
+### UTILISATEURS
+### ========================================
+
+### Lister tous les utilisateurs
+GET {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+
+### Lister les utilisateurs avec pagination
+GET {{baseUrl}}/users?page=1&limit=10
+Authorization: Bearer {{authToken}}
+
+### Créer un nouvel utilisateur
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "email": "newuser@example.com",
+  "password": "password123",
+  "firstName": "New",
+  "lastName": "User",
+  "birthDate": "1990-01-01T00:00:00.000Z"
+}
+
+### Obtenir un utilisateur par ID (remplacer {id} par un vrai ID)
+GET {{baseUrl}}/users/{id}
+Authorization: Bearer {{authToken}}
+
+### Modifier un utilisateur (remplacer {id} par un vrai ID)
+PUT {{baseUrl}}/users/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "email": "updated@example.com",
+  "firstName": "Updated",
+  "lastName": "Name",
+  "birthDate": "1990-01-01T00:00:00.000Z"
+}
+
+### Supprimer un utilisateur (remplacer {id} par un vrai ID)
+DELETE {{baseUrl}}/users/{id}
+Authorization: Bearer {{authToken}}
+
+### Mettre à jour le mot de passe avec un token
+PUT {{baseUrl}}/users/password
+Content-Type: {{contentType}}
+
+{
+  "token": "your-reset-token",
+  "password": "newpassword123"
+} 

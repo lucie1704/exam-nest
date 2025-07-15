@@ -1,0 +1,16 @@
+### Variables d'environnement
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ========================================
+### TOKENS
+### ========================================
+
+### Vérifier un token (remplacer {token} par un vrai token)
+GET {{baseUrl}}/tokens/{token}
+
+### Vérifier un token d'invitation
+GET {{baseUrl}}/tokens/test-token-1
+
+### Vérifier un autre token
+GET {{baseUrl}}/tokens/test-token-2 
