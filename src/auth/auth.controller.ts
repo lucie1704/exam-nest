@@ -3,7 +3,7 @@ import { Public } from 'src/decorators/Public';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registerDto';
 import { SignInDto } from './dto/signInDto';
-import { RequestTwoFactorDto, VerifyTwoFactorDto, LoginWithTwoFactorDto } from './dto/two-factor.dto';
+import { RequestTwoFactorDto, VerifyTwoFactorDto, LoginWithTwoFactorDto } from './dto/twoFactorDto';
 
 @Controller('auth')
 export class AuthController {

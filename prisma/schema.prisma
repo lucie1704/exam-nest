@@ -33,6 +33,7 @@ model User {
   birthDate DateTime @default(now())
   role      Role     @default(USER)
   tokens    Token[]
+  watchlist WatchlistItem[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isActive  Boolean  @default(false)
@@ -46,4 +47,40 @@ model Token {
   createdAt DateTime  @default(now())
   expiresAt DateTime
   usedAt    DateTime?
+}
+
+model Movie {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  releaseYear Int?
+  genre       String?
+  director    String?
+  posterUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  watchlist   WatchlistItem[]
+}
+
+model WatchlistItem {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId   String
+  status    WatchStatus @default(WANT_TO_WATCH)
+  rating    Int?     // Note sur 5
+  notes     String?  // Notes personnelles
+  watchedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, movieId])
+}
+
+enum WatchStatus {
+  WANT_TO_WATCH
+  WATCHING
+  WATCHED
+  DROPPED
 }

@@ -1,0 +1,146 @@
+### Variables d'environnement
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ========================================
+### AUTHENTIFICATION 2FA
+### ========================================
+
+### 1. Connexion admin (déclenche l'envoi d'un code 2FA)
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### 2. Connexion admin avec 2FA (remplacer 123456 par le vrai code reçu par email)
+# @name adminLogin2FA
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@example.com",
+  "password": "admin123",
+  "code": "123456"
+}
+
+### 3. Connexion utilisateur normal (déclenche l'envoi d'un code 2FA)
+# @name userLogin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### 4. Connexion utilisateur avec 2FA
+# @name userLogin2FA
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "password123",
+  "code": "123456"
+}
+
+### Extraire les tokens (utiliser les tokens de la 2FA)
+@adminToken = {{adminLogin2FA.response.body.access_token}}
+@userToken = {{userLogin2FA.response.body.access_token}}
+
+### ========================================
+### CRÉATION D'UN FILM POUR LES TESTS
+### ========================================
+
+### Créer un film pour les tests de watchlist
+# @name createTestMovie
+POST {{baseUrl}}/movies
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Inception",
+  "description": "Un voleur qui pénètre dans les rêves des autres",
+  "releaseYear": 2010,
+  "genre": "Science-Fiction",
+  "director": "Christopher Nolan",
+  "posterUrl": "https://example.com/inception.jpg"
+}
+
+### Extraire l'ID du film créé
+@movieId = {{createTestMovie.response.body.id}}
+
+### ========================================
+### WATCHLIST (UTILISATEURS)
+### ========================================
+
+### 5. Ajouter un film à ma watchlist (USER)
+# @name addToWatchlist
+POST {{baseUrl}}/watchlist
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "movieId": "{{movieId}}",
+  "status": "WANT_TO_WATCH",
+  "rating": 5,
+  "notes": "Film très attendu !"
+}
+
+### Extraire l'ID de l'élément de watchlist créé
+@watchlistItemId = {{addToWatchlist.response.body.id}}
+
+### 6. Voir ma watchlist (USER)
+GET {{baseUrl}}/watchlist/my
+Authorization: Bearer {{userToken}}
+
+### 7. Voir mes statistiques (USER)
+GET {{baseUrl}}/watchlist/my/stats
+Authorization: Bearer {{userToken}}
+
+### 8. Modifier un élément de ma watchlist (USER)
+PATCH {{baseUrl}}/watchlist/{{watchlistItemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "status": "WATCHED",
+  "rating": 4,
+  "notes": "Excellent film !"
+}
+
+### 9. Retirer un film de ma watchlist (USER)
+DELETE {{baseUrl}}/watchlist/{{watchlistItemId}}
+Authorization: Bearer {{userToken}}
+
+### ========================================
+### ADMIN - GESTION DES WATCHLISTS
+### ========================================
+
+### 10. Voir toutes les watchlists (ADMIN)
+GET {{baseUrl}}/watchlist/all
+Authorization: Bearer {{adminToken}}
+
+### 11. Voir la watchlist d'un utilisateur spécifique (ADMIN)
+GET {{baseUrl}}/watchlist/user/USER_ID_HERE
+Authorization: Bearer {{adminToken}}
+
+### 12. Voir les statistiques d'un utilisateur (ADMIN)
+GET {{baseUrl}}/watchlist/user/USER_ID_HERE/stats
+Authorization: Bearer {{adminToken}}
+
+### ========================================
+### TESTS D'ERREURS ET PERMISSIONS
+### ========================================
+
+### 13. Tentative d'accès à la watchlist d'un autre utilisateur (devrait échouer)
+GET {{baseUrl}}/watchlist/user/OTHER_USER_ID_HERE
+Authorization: Bearer {{userToken}}
+
+### 14. Tentative d'accès à toutes les watchlists sans être admin (devrait échouer)
+GET {{baseUrl}}/watchlist/all
+Authorization: Bearer {{userToken}}

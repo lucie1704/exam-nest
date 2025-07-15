@@ -18,6 +18,7 @@ export interface JwtPayload {
   email: string;
   firstName: string;
   lastName: string;
+  role: string;
 }
 
 @Injectable()
@@ -244,6 +245,7 @@ export class AuthService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

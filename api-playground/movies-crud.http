@@ -1,0 +1,127 @@
+### Variables d'environnement
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ========================================
+### AUTHENTIFICATION 2FA
+### ========================================
+
+### 1. Connexion admin (déclenche l'envoi d'un code 2FA)
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### 2. Connexion avec 2FA (remplacer 123456 par le vrai code reçu par email)
+# @name adminLogin2FA
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@example.com",
+  "password": "admin123",
+  "code": "123456"
+}
+
+### 3. Connexion utilisateur normal (déclenche l'envoi d'un code 2FA)
+# @name userLogin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### 4. Connexion utilisateur avec 2FA
+# @name userLogin2FA
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "password123",
+  "code": "123456"
+}
+
+### Extraire les tokens (utiliser les tokens de la 2FA)
+@adminToken = {{adminLogin2FA.response.body.access_token}}
+@userToken = {{userLogin2FA.response.body.access_token}}
+
+### ========================================
+### TESTS DE LECTURE (USER + ADMIN)
+### ========================================
+
+### 5. Lister tous les films (avec token admin)
+GET {{baseUrl}}/movies
+Authorization: Bearer {{adminToken}}
+
+### 6. Lister tous les films (avec token user)
+GET {{baseUrl}}/movies
+Authorization: Bearer {{userToken}}
+
+### 7. Rechercher des films par réalisateur
+GET {{baseUrl}}/movies?search=nolan
+Authorization: Bearer {{adminToken}}
+
+### 8. Pagination des films
+GET {{baseUrl}}/movies?page=1&limit=3
+Authorization: Bearer {{adminToken}}
+
+### ========================================
+### TESTS CRUD (ADMIN SEULEMENT)
+### ========================================
+
+### 9. Créer un nouveau film (ADMIN)
+POST {{baseUrl}}/movies
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Oppenheimer",
+  "description": "L'histoire de J. Robert Oppenheimer et de la création de la bombe atomique.",
+  "releaseYear": 2023,
+  "genre": "Drame Historique",
+  "director": "Christopher Nolan",
+  "posterUrl": "https://example.com/oppenheimer.jpg"
+}
+
+### 10. Créer un autre film
+POST {{baseUrl}}/movies
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Barbie",
+  "description": "Barbie vit dans un monde parfait jusqu\'à ce qu\'elle découvre la réalité.",
+  "releaseYear": 2023,
+  "genre": "Comédie",
+  "director": "Greta Gerwig"
+}
+
+### ========================================
+### TESTS D'ERREURS ET PERMISSIONS
+### ========================================
+
+### 11. Tentative de création sans token (devrait échouer)
+POST {{baseUrl}}/movies
+Content-Type: {{contentType}}
+
+{
+  "title": "Film non autorisé",
+  "description": "Ceci devrait échouer"
+}
+
+### 12. Tentative de création avec token user (devrait échouer)
+POST {{baseUrl}}/movies
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "title": "Film créé par un user",
+  "description": "Ceci devrait échouer car seuls les admins peuvent créer"
+}
