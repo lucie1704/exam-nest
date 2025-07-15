@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Bienvenue sur My Movie List</title>
+    <title>Activation de votre compte TP Machine</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,31 +43,19 @@
 </head>
 <body>
     <div class="header">
-        <h1>🎉 Bienvenue sur My Movie List !</h1>
+        <h1>Bienvenue sur My Movie List !</h1>
     </div>
     
     <div class="content">
-        <h2>Bonjour {{firstName}},</h2>
-        
-        <p>Nous sommes ravis de vous accueillir sur <strong>My Movie List</strong> !</p>
-        
-        <p>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter à votre espace personnel.</p>
-        
-        <p>Pour commencer à utiliser notre plateforme :</p>
-        <ul>
-            <li>Connectez-vous avec votre email et mot de passe</li>
-            <li>Explorez les fonctionnalités disponibles</li>
-            <li>N'hésitez pas à nous contacter si vous avez des questions</li>
-        </ul>
-        
-        <div style="text-align: center;">
-            <a href="{{loginUrl}}" class="button">Se connecter</a>
-        </div>
-        
-        <p>Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter.</p>
-        
-        <p>Cordialement,<br>
-        L'équipe My Movie List</p>
+        <p>Bonjour {{firstName}},</p>
+        <p>Merci de vous être inscrit sur <strong>My Movie List</strong> !</p>
+        <p>Pour activer votre compte, cliquez sur le lien ci-dessous :</p>
+        <p><a href="{{activationUrl}}">Activer mon compte</a></p>
+        <p>Ou copiez/collez ce lien dans votre navigateur :</p>
+        <p>{{activationUrl}}</p>
+        <p>Ce lien est valable 2 minutes.</p>
+        <p>Si vous n'êtes pas à l'origine de cette inscription, ignorez cet email.</p>
+        <p>L'équipe My Movie List</p>
     </div>
     
     <div class="footer">

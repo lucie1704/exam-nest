@@ -3,10 +3,11 @@
 @contentType = application/json
 
 ### ========================================
-### AUTHENTIFICATION
+### INSCRIPTION ET ACTIVATION
 ### ========================================
 
-### Inscription d'un nouvel utilisateur
+### 1. Inscription d'un nouvel utilisateur (compte inactif par défaut)
+# @name registerUser
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
 
@@ -17,7 +18,71 @@ Content-Type: {{contentType}}
   "lastName": "User"
 }
 
-### Connexion utilisateur
+### 2. Tentative de connexion avec un compte non activé (devrait échouer)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 3. Activer le compte (remplacer {token} par le vrai token reçu par email)
+GET {{baseUrl}}/auth/activate/{token}
+
+### 4. Test avec un token invalide (devrait échouer)
+GET {{baseUrl}}/auth/activate/invalid-token-here
+
+### ========================================
+### AUTHENTIFICATION À DEUX FACTEURS (2FA)
+### ========================================
+
+### 5. Demander manuellement un code 2FA (optionnel - pour renvoyer un code)
+POST {{baseUrl}}/auth/2fa/request
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com"
+}
+
+### 6. Vérifier un code 2FA (optionnel - pour tester la validation)
+POST {{baseUrl}}/auth/2fa/verify
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "code": "123456"
+}
+
+### 7. Connexion avec 2FA (email + mot de passe + code)
+# @name loginWith2FA
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "code": "123456"
+}
+
+### 8. Connexion normale après activation (déclenche automatiquement la 2FA)
+# @name loginActivatedUser
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Extraire le token après validation 2FA
+@authToken = {{loginWith2FA.response.body.access_token}}
+
+### ========================================
+### TESTS AVEC COMPTES EXISTANTS
+### ========================================
+
+### Connexion utilisateur admin
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
@@ -42,4 +107,112 @@ Content-Type: {{contentType}}
 {
   "email": "jane@example.com",
   "password": "password123"
-} 
+}
+
+### ========================================
+### TESTS D'ERREURS 2FA
+### ========================================
+
+### Demander un code 2FA avec un compte non activé (devrait échouer)
+POST {{baseUrl}}/auth/2fa/request
+Content-Type: {{contentType}}
+
+{
+  "email": "inactive@example.com"
+}
+
+### Demander un code 2FA avec un email inexistant (devrait échouer)
+POST {{baseUrl}}/auth/2fa/request
+Content-Type: {{contentType}}
+
+{
+  "email": "nonexistent@example.com"
+}
+
+### Connexion 2FA avec mauvais mot de passe
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword",
+  "code": "123456"
+}
+
+### Connexion 2FA avec mauvais code
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "code": "000000"
+}
+
+### Connexion 2FA avec code expiré (attendre 5 minutes après avoir demandé un code)
+POST {{baseUrl}}/auth/2fa/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "code": "123456"
+}
+
+### ========================================
+### TESTS D'ERREURS GÉNÉRALES
+### ========================================
+
+### Tentative de connexion avec mauvais mot de passe
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+### Tentative de connexion avec email inexistant
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "nonexistent@example.com",
+  "password": "password123"
+}
+
+### Inscription avec email déjà utilisé (devrait échouer)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "firstName": "Duplicate",
+  "lastName": "User"
+}
+
+### ========================================
+### INSTRUCTIONS DE TEST
+### ========================================
+
+### Pour tester l'activation :
+# 1. Exécutez l'inscription (étape 1)
+# 2. Vérifiez MailDev pour récupérer le token d'activation
+# 3. Remplacez {token} dans l'étape 3 par le vrai token
+# 4. Testez l'activation
+
+### Pour tester la 2FA (workflow obligatoire) :
+# 1. Assurez-vous que le compte est activé
+# 2. Tentez une connexion normale (étape 8) - cela déclenche automatiquement la 2FA
+# 3. Vérifiez MailDev pour récupérer le code à 6 chiffres
+# 4. Remplacez "123456" dans l'étape 7 par le vrai code
+# 5. Complétez la connexion avec le code 2FA
+
+### Notes importantes :
+# - La 2FA est OBLIGATOIRE pour toutes les connexions
+# - La connexion normale déclenche automatiquement l'envoi d'un code 2FA
+# - Les codes 2FA expirent après 5 minutes
+# - Chaque nouveau code 2FA invalide les précédents
+# - Les tokens d'activation expirent après 24 heures (ou 2 minutes en mode test)
+# - Vérifiez MailDev sur http://localhost:1080 pour voir les emails 
