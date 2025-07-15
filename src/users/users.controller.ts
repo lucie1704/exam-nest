@@ -11,7 +11,6 @@ import {
   Res,
 } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 import { Response } from 'express';
 import { Public } from 'src/decorators/Public';
 import { CreateOrUpdateUserDto } from './dto/createOrUpdateUser';

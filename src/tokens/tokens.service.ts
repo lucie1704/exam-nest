@@ -47,7 +47,7 @@ export class TokensService {
     if (type === TokenType.EMAIL_VERIFICATION) {
       await this.mailerService.sendMail({
         to: token.user.email,
-        subject: 'Welcome to TP Machine',
+        subject: 'Welcome to My Movie List',
         template: 'welcome-user',
         context: {
           firstName: token.user.firstName,

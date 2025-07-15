@@ -20,7 +20,7 @@ export class AppController {
     try {
       await this.mailerService.sendMail({
         to: body.to,
-        subject: 'Test Email - TP Machine',
+        subject: 'My Movie List',
         template: 'welcome-student',
         context: {
           firstName: body.firstName,

@@ -13,8 +13,8 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('TP machine Lucie GODARD')
-    .setDescription('TP machine API')
+    .setTitle('My Movie List Lucie GODARD')
+    .setDescription('My Movie List API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

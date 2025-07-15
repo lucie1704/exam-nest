@@ -66,7 +66,7 @@ export class AuthService {
     try {
       await this.mailerService.sendMail({
         to: user.email,
-        subject: 'Bienvenue sur TP Machine !',
+        subject: 'Bienvenue sur My Movie List !',
         template: 'welcome-user',
         context: {
           firstName: user.firstName,
