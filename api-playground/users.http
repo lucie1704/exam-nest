@@ -27,19 +27,6 @@ Authorization: Bearer {{authToken}}
 GET {{baseUrl}}/users?page=1&limit=10
 Authorization: Bearer {{authToken}}
 
-### Créer un nouvel utilisateur
-POST {{baseUrl}}/users
-Content-Type: {{contentType}}
-Authorization: Bearer {{authToken}}
-
-{
-  "email": "newuser@example.com",
-  "password": "password123",
-  "firstName": "New",
-  "lastName": "User",
-  "birthDate": "1990-01-01T00:00:00.000Z"
-}
-
 ### Obtenir un utilisateur par ID (remplacer {id} par un vrai ID)
 GET {{baseUrl}}/users/{id}
 Authorization: Bearer {{authToken}}
